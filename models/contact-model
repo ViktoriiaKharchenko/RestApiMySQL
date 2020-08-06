@@ -1,0 +1,16 @@
+
+module.exports = (sequelize, Sequelize) => {
+    const {DataTypes} = require('sequelize')
+    const Contact = sequelize.define("contact", {
+        phoneNumber: {
+            type: DataTypes.STRING
+
+        },
+        email: {
+            type: DataTypes.STRING
+        }
+
+    });
+
+    return Contact;
+};
