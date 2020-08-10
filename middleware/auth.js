@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-const {secret} = require('../config/app').jwt
 
 module.exports=(req, res, next)=>{
 
@@ -7,7 +6,7 @@ module.exports=(req, res, next)=>{
     if (!token)
         return res.status(403).send({ message: 'No token provided.' });
 
-    jwt.verify(token, secret, function(err, decoded) {
+    jwt.verify(token, process.env.secret, function(err, decoded) {
         if (err) {
 
             return res.status(500).send({message: 'Failed to authenticate token.'});

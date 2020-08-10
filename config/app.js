@@ -1,7 +1,5 @@
 module.exports = {
-    apiPort: 3002,
     jwt :{
-        secret : 'secKey',
         tokens:{
             access:{
                 type:'access',
@@ -14,5 +12,5 @@ module.exports = {
         }
     },
 
-    mysqlpass:'RootSecPass1'
+
 };

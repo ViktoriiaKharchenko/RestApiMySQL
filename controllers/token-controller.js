@@ -1,6 +1,6 @@
 const { v4: uuid } = require('uuid');
 const jwt = require('jsonwebtoken');
-const {secret, tokens} = require('../config/app').jwt;
+const {tokens} = require('../config/app').jwt;
 
 const db = require("../db/index");
 const Token = db.tokens;
@@ -14,7 +14,7 @@ const generateAccessToken =(userId) =>{
     const options={
         expiresIn:tokens.access.expiresIn
     }
-    return jwt.sign(payload,secret,options);
+    return jwt.sign(payload,process.env.secret,options);
 };
 const generateRefreshToken =() =>{
 
@@ -27,7 +27,7 @@ const generateRefreshToken =() =>{
     }
     return {
         id: payload.id,
-       token:  jwt.sign(payload,secret,options),
+       token:  jwt.sign(payload,process.env.secret,options),
     }
 };
 

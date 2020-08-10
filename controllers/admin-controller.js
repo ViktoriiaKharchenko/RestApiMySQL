@@ -1,7 +1,6 @@
 //const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {secret} = require('../config/app').jwt;
 const authHelper = require('../controllers/token-controller');
 
 const db = require("../db/index");
@@ -24,7 +23,7 @@ const refreshTokens=(req,res)=>{
     const {refreshToken }= req.body;
     let payload;
     try {
-    payload = jwt.verify(refreshToken,secret);
+    payload = jwt.verify(refreshToken,process.env.secret);
     if (payload.type !== 'refresh'){
         res.status(400).json({message:"Invalid token"});
         return;
@@ -114,7 +113,7 @@ const signIn = (req,res)=>{
             else{
             const isValid = bcrypt.compareSync(password,admin.password);
             if(isValid){
-              //  const token = jwt.sign({id : admin.id.toString(),email:admin.email},secret);
+
                 updateTokens(admin.id).then((tokens)=> {
                     return res.status(201).json({
                         success: true,

@@ -1,6 +1,7 @@
-const {mysqlpass} = require('../config/app')
+require('dotenv').config();
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize("EntSiteDatabase", "root", mysqlpass, {
+
+const sequelize = new Sequelize(process.env.database, process.env.user, process.env.mysqlpass, {
     host: "localhost",
     dialect: "mysql",
     operatorsAliases: false,
