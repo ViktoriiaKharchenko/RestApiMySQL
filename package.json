@@ -18,6 +18,7 @@
     "mongoose": "^5.9.17",
     "mysql2": "^2.1.0",
     "nodemon": "^2.0.4",
-    "sequelize": "^6.3.3"
+    "sequelize": "^6.3.3",
+    "uuid": "^8.3.0"
   }
 }
