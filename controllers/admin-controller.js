@@ -1,4 +1,3 @@
-//const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const authHelper = require('../controllers/token-controller');
@@ -9,8 +8,8 @@ const Token = db.tokens;
 const Op = db.Sequelize.Op;
 
 
-const updateTokens =(userId)=>{
-    const accessToken = authHelper.generateAccessToken(userId);
+const updateTokens =(userId,userEmail)=>{
+    const accessToken = authHelper.generateAccessToken(userId,userEmail);
     const refreshToken = authHelper.generateRefreshToken();
 
     return authHelper.replaceDBRefreshToken(refreshToken.id,userId)
@@ -108,13 +107,13 @@ const signIn = (req,res)=>{
         .then((admin)=>
         {
             if(!admin){
-                return  res.status(401).json({massage: 'Admin does not exist'});
+                return  res.status(401).json({message: 'Admin does not exist'});
             }
             else{
             const isValid = bcrypt.compareSync(password,admin.password);
             if(isValid){
 
-                updateTokens(admin.id).then((tokens)=> {
+                updateTokens(admin.id,admin.email).then((tokens)=> {
                     return res.status(201).json({
                         success: true,
                         accessToken: tokens.accessToken,
@@ -130,12 +129,13 @@ const signIn = (req,res)=>{
       .catch(err=>
           res.status(500).json({message:err.message}))
 };
+
 const checkToken = (req, res) => {
 
     Admin.findOne({
         where :{
             id: req.userId,
-        //    email: req.userEmail
+            email: req.userEmail
 
         }})
         .then((user)=>{
@@ -150,12 +150,70 @@ const checkToken = (req, res) => {
         res.status(500).send("There was a problem finding the user."))
 
     };
+const updateAdmin = (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+    const id = req.params.id;
+    req.body.password = bcrypt.hashSync(req.body.password,10);
+    Admin.update(req.body, {
+        where: { id: id }
+    })
+        .then(num => {
+            if(num==1){
+                return res.status(200).json({
+                    success: true,
+                    message: 'Admin updated!',
+                })}
+            else {
+                return res.status(404).json({
+                    message: 'Admin not found!',
+                })
+            }
+        })
+        .catch(err => {
+            return res.status(404).json({
+                error : err.message,
+                message: 'Admin not updated!',
+            })
+        });
+};
+const checkPassword=(req,res)=>{
+
+    Admin.findOne({
+        where :{
+            email: req.userEmail,
+            id:req.userId
+
+        }})
+        .then((user)=>{
+            if (!user) return res.status(404).json({message: 'No user found'});
+
+            const isValid = bcrypt.compareSync(req.body.password,user.password);
+            if(isValid){
+                return res.status(200).json({
+                    success:true,
+                    id : user.id
+                });
+                }
+            else {
+                return res.status(401).json({message: 'Invalid password'});
+            }
+})
+        .catch (err=>
+            res.status(500).json({message :"There was a problem finding the user."}))
+}
 
 
 module.exports = {
     signIn,
     getAdmins,
     createAdmin,
+    updateAdmin,
+    checkPassword,
     checkToken,
     refreshTokens
 

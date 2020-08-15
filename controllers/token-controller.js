@@ -5,9 +5,10 @@ const {tokens} = require('../config/app').jwt;
 const db = require("../db/index");
 const Token = db.tokens;
 
-const generateAccessToken =(userId) =>{
+const generateAccessToken =(userId,userEmail) =>{
 
     const payload={
+        userEmail,
         userId,
         type: tokens.access.type,
     };

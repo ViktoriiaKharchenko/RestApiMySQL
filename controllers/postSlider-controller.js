@@ -103,7 +103,7 @@ const getPostById = (req, res) => {
 
 const getPosts =  (req, res) => {
 
-    PostSlider.findAll()
+    PostSlider.findAll({limit:4})
         .then(data => {
             return res.status(200).json({ success: true, data: data})
         })
@@ -112,7 +112,7 @@ const getPosts =  (req, res) => {
         });
 };
 
-//
+
 module.exports = {
     createPost,
     updatePost,

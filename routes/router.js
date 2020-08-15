@@ -38,5 +38,7 @@ router.post('/signin',AdminCtrl.signIn)
 router.post('/admin',AdminCtrl.createAdmin)
 router.get('/auth',AuthMiddleware, AdminCtrl.checkToken)
 router.post('/refreshTokens', AdminCtrl.refreshTokens)
+router.post('/checkPass',AuthMiddleware, AdminCtrl.checkPassword),
+router.put('/admin/:id',AuthMiddleware, AdminCtrl.updateAdmin)
 
 module.exports = router
