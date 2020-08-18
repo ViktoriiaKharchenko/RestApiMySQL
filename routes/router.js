@@ -7,6 +7,7 @@ const ContactCtrl = require('../controllers/contact-controller')
 const PostSliderCtrl = require('../controllers/postSlider-controller')
 
 const AuthMiddleware = require('../middleware/auth')
+const resetMiddleware =require('../middleware/passReset')
 const router = express.Router()
 
 router.post('/question', QuestionCtrl.createQuestion)
@@ -34,11 +35,14 @@ router.get('/contact/:id', ContactCtrl.getContactById)
 router.get('/contacts', ContactCtrl.getContacts)
 
 router.post('/signin',AdminCtrl.signIn)
-//router.get('/admins',AuthMiddleware, AdminCtrl.getAdmins)
+router.get('/admins', AdminCtrl.getAdmins)
 router.post('/admin',AdminCtrl.createAdmin)
+router.delete('/admin/:id',AdminCtrl.deleteAdmin)
 router.get('/auth',AuthMiddleware, AdminCtrl.checkToken)
 router.post('/refreshTokens', AdminCtrl.refreshTokens)
 router.post('/checkPass',AuthMiddleware, AdminCtrl.checkPassword),
 router.put('/admin/:id',AuthMiddleware, AdminCtrl.updateAdmin)
+router.post('/forgotPass', AdminCtrl.forgotPassword),
+router.put('/resetPass',resetMiddleware,AdminCtrl.resetPassword)
 
 module.exports = router
